@@ -9,11 +9,9 @@ LABEL maintainer="AwesomeContainer"
 
 EXPOSE 3306
 
-COPY Bootstrap.ps1 C:\Bootstrap.ps1
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN powershell -Command \
-    Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; \
-    Invoke-WebRequest -UseBasicParsing -Uri 'https://downloads.mariadb.org/f/mariadb-10.3.12/winx64-packages/mariadb-10.3.12-winx64.zip' -OutFile 'mariadb.zip'; \
+RUN Invoke-WebRequest -UseBasicParsing -Uri 'https://downloads.mariadb.org/f/mariadb-10.3.12/winx64-packages/mariadb-10.3.12-winx64.zip' -OutFile 'mariadb.zip'; \
     Expand-Archive -Path c:\mariadb.zip -DestinationPath c:\ ; \
     Start-Sleep -Seconds 1; \
     Move-Item -Path 'C:\mariadb-10.3.12-winx64' -Destination 'C:\mariadb\' -Force; \
@@ -23,5 +21,7 @@ RUN powershell -Command \
 WORKDIR /mariadb
 
 VOLUME c:\\mariadbdata
+
+COPY Bootstrap.ps1 /
 
 ENTRYPOINT ["powershell", "-ExecutionPolicy", "Unrestricted", "C:\\Bootstrap.ps1"]
