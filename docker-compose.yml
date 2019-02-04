@@ -1,6 +1,6 @@
 version: '2.1'  
 services:  
-  caddy:
+  mariadb:
     build: .
     image: awesomecontainer/wdocker-mariadb:${DOCKERTAG:-latest}
     container_name: mariadb
